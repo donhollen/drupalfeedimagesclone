@@ -76,7 +76,7 @@ function feed_image_settings_form() {
     ),
   );
 
-  // get all the fields from the content type
+  // Get all the fields from the content type.
   $instances = field_info_instances('node');
   $fields = array();
   foreach ($instances as $types) {
@@ -120,31 +120,31 @@ function feed_image_settings_form_validate($form, &$form_state) {
 }
 
 function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
-  // load the node
+  // Load the node.
   $node = node_load($entity->nid);
 
   $alowed_nodes = variable_get('feed_image_content_type');
   $feed_image_state = variable_get('feed_image_state');
 
-  // if the module is activated and the content is chosent for pictures to be added
-  // than go and add them, else just go out..
+  // If the module is activated and the content is chosent for pictures to be added.
+  // Than go and add them, else just go out.
   if ($alowed_nodes[$node->type] == $node->type && $feed_image_state == 1) {
 
-    // make changes to the node that was just saved
-    // geting the link of the XML
+    // Make changes to the node that was just saved.
+    // Geting the link of the XML.
     $feedUrldb = db_select('feeds_source', 'fs')
         ->distinct()
         ->fields('fs', array('source', 'imported'));
 
-    // link of the XML
+    // Link of the XML.
     $feed_url = $feedUrldb->execute()->fetchAssoc();
 
-    // XML source code
+    // XML source code.
     $xml = file_get_contents($feed_url['source']);
     // array to store the matches
     $matches = array();
 
-    // regex for matching all different feed items
+    // Regex for matching all different feed items.
     $allItems = "/(?:<item>)(.*?)(?:<\\/item>)/s";
 
     preg_match_all($allItems, $xml, $matches);
@@ -156,7 +156,7 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
       }
     }
 
-    // matching the urls of the images
+    // Matching the urls of the images.
     $regexRSSImages1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
     $regexRSSImages2 = "/(?:url=\")(.*)(?:\"\\/>)/";
 
@@ -167,19 +167,18 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
       preg_match_all($regexRSSImages1, $xml, $matches);
     }
 
-    // urls of the images to be dowloaded and saved to the fiulesystem
+    // Urls of the images to be dowloaded and saved to the fiulesystem.
     $imagesUrls = $matches[1];
 
     $field_macine_name = variable_get('feed_image_' . $node->type); // = field_images
-    // the actual URL where the image is, it is than used so that image can be dowloaded
-    // and store3d into drupal's filesystem and can be found by other modules snd hooks
+    // The actual URL where the image is, it is than used so that image can be dowloaded.
+    // Than it can be stored into drupal's filesystem and can be found by other modules snd hooks.
     foreach ($imagesUrls as $url) {
       $file = system_retrieve_file($url, 'public://', true, FILE_EXISTS_REPLACE);
 
       file_usage_add($file, 'file', 'node', $node->nid);
 
-      // associating the current node with all the files that were targeted
-      // so they can be loaded later in the node
+      // Associating the current node with all the files that were targeted so they can be loaded later in the node.
       $node->{$field_macine_name}[LANGUAGE_NONE][] = array(
         'fid' => $file->fid,
         'filename' => $file->filename,
@@ -188,9 +187,8 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
         'status' => 1
       );
     }
-
-    // finish changes
-    // save the node
+    
+    // Finish changes and save the node.
     node_save($node);
   }
 }
