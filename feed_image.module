@@ -2,8 +2,6 @@
 /**
  * @file
  * This is the module file of the Feeds Images Importer.
- * The functions and hooks implemented here are used in order
- * to achieve the tergeted functionality of the module.
  */
 
 /**
@@ -64,8 +62,7 @@ function feed_image_settings_form() {
     '#options' => $node_types,
     '#title' => t('What content types do you want to use this module with?'),
     '#default_value' => variable_get('feed_image_content_type', array()),
-    '#description' => t('All the content types that are chosen are going to have images attached to their image fields when they are generated with'
-        . 'Feeds module. If the Image Field is set to multiple all the available images are to be dowlnoaded.'),
+    '#description' => t('All the content types that are chosen are going to have images attached to their image fields when they are generated with Feeds module. If the Image Field is set to multiple all the available images are to be dowlnoaded.'),
   );
 
   $form['settings']['choose_field'] = array(
