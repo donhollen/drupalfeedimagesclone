@@ -1,6 +1,7 @@
 <?php
+
 /**
- * @file 
+ * @file
  * This is the module file of the Feeds Images Importer.
  */
 
@@ -21,6 +22,10 @@ function feed_image_menu() {
   return $menu;
 }
 
+/**
+ * Function to return the configuration page form.
+ * @return array();
+ */
 function feed_image_settings_form() {
 
   $form = array();
@@ -187,7 +192,7 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
         'status' => 1
       );
     }
-    
+
     // Finish changes and save the node.
     node_save($node);
   }
