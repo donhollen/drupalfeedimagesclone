@@ -23,9 +23,10 @@ function feed_image_menu() {
 }
 
 /**
- * Function to return the configuration page form.
- *
+ * Settings form.
+ * 
  * @return array();
+ *   Function to return the configuration page form.
  */
 function feed_image_settings_form() {
 
@@ -120,9 +121,9 @@ function feed_image_settings_form() {
 /**
  * Validation for the settings form.
  *
- * @param $form
+ * @param array $form
  *   Array returning the form.
- * @param $form_state
+ * @param array $form_state
  *   Array returning the form state.
  */
 function feed_image_settings_form_validate($form, &$form_state) {
@@ -158,7 +159,7 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
 
     // XML source code.
     $xml = file_get_contents($feed_url['source']);
-    // array to store the matches
+    // Array to store the matches.
     $matches = array();
 
     // Regex for matching all different feed items.
@@ -167,31 +168,31 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
     preg_match_all($all_items, $xml, $matches);
 
     foreach ($matches[0] as $match) {
-      if (strpos($match, $node->title) != false) {
+      if (strpos($match, $node->title) != FALSE) {
         $xml = $match;
         break;
       }
     }
 
     // Matching the urls of the images.
-    $regex_rss_Images1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
-    $regex_rss_Images2 = "/(?:url=\")(.*)(?:\"\\/>)/";
+    $regex_rss_images1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
+    $regex_rss_images2 = "/(?:url=\")(.*)(?:\"\\/>)/";
 
-    if (!preg_match($regex_rss_Images1, $xml)) {
-      preg_match_all($regex_rss_Images2, $xml, $matches);
+    if (!preg_match($regex_rss_images1, $xml)) {
+      preg_match_all($regex_rss_images2, $xml, $matches);
     }
     else {
-      preg_match_all($regex_rss_Images1, $xml, $matches);
+      preg_match_all($regex_rss_images1, $xml, $matches);
     }
 
     // Urls of the images to be dowloaded and saved to the fiulesystem.
     $images_urls = $matches[1];
 
-    $field_macine_name = variable_get('feed_image_' . $node->type); // = field_images
+    $field_macine_name = variable_get('feed_image_' . $node->type);
     // The actual URL where the image is, it is than used so that image can be dowloaded.
     // Than it can be stored into drupal's filesystem and can be found by other modules snd hooks.
     foreach ($images_urls as $url) {
-      $file = system_retrieve_file($url, 'public://', true, FILE_EXISTS_REPLACE);
+      $file = system_retrieve_file($url, 'public://', TRUE, FILE_EXISTS_REPLACE);
 
       file_usage_add($file, 'file', 'node', $node->nid);
 
