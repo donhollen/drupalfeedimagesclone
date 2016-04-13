@@ -97,7 +97,7 @@ function feed_image_settings_form() {
 
       $form['settings']['choose_field'][$machine_name] = array(
         '#type' => 'fieldset',
-        '#title' => t($name . ":"),
+        '#title' => $name . ":",
         '#states' => array(
           'visible' => array(
             ':input[name="feed_image_content_type[' . $machine_name . ']"]' => array('checked' => TRUE),
