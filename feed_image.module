@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Implement hook_menu();
+ * Implements hook_menu().
  */
 function feed_image_menu() {
   $menu = array();
 
-  $menu['admin/config/content/feed-image/settings'] = array(
-    'title' => 'Feed Image Module',
+  $menu['admin/config/content/feeds-images/settings'] = array(
+    'title' => 'Feeds Images Importer',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('feed_image_settings_form'),
     'access arguments' => array('administer site configuration'),
-    'description' => 'Configure default options for Feed Image Module',
+    'description' => 'Configure default options for Feeds Images Importer',
   );
 
   return $menu;
@@ -111,7 +111,7 @@ function feed_image_settings_form() {
 function feed_image_settings_form_validate($form, &$form_state) {
   foreach ($form_state['values']['feed_image_content_type'] as $key => $value) {
     if ($value != '0' && $form_state['values']['feed_image_' . $key] == NULL) {
-      form_set_error($key, 'You have to choose Fields for all chosen content types to be applied.');
+      form_set_error($key, t('You have to choose Fields for all chosen content types to be applied.'));
     }
   }
 }
@@ -166,9 +166,6 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
 
     //urls of the images to be dowloaded and saved to the fiulesystem
     $imagesUrls = $matches[1];
-
-    //array that stores the ID's of the targeted images to be added in the current node
-    $target_images = array();
 
     $field_macine_name = variable_get('feed_image_' . $node->type); // = field_images
     //the actual URL where the image is, it is than used so that image can be dowloaded
