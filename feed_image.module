@@ -24,7 +24,7 @@ function feed_image_menu() {
 
 /**
  * Function to return the configuration page form.
- * 
+ *
  * @return array();
  */
 function feed_image_settings_form() {
@@ -119,9 +119,11 @@ function feed_image_settings_form() {
 
 /**
  * Validation for the settings form.
- * 
- * @param type $form
- * @param type $form_state
+ *
+ * @param $form
+ *   Array returning the form.
+ * @param $form_state
+ *   Array returning the form state.
  */
 function feed_image_settings_form_validate($form, &$form_state) {
   foreach ($form_state['values']['feed_image_content_type'] as $key => $value) {
@@ -147,12 +149,12 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
 
     // Make changes to the node that was just saved.
     // Geting the link of the XML.
-    $feedUrldb = db_select('feeds_source', 'fs')
+    $feed_url_db = db_select('feeds_source', 'fs')
         ->distinct()
         ->fields('fs', array('source', 'imported'));
 
     // Link of the XML.
-    $feed_url = $feedUrldb->execute()->fetchAssoc();
+    $feed_url = $feed_url_db->execute()->fetchAssoc();
 
     // XML source code.
     $xml = file_get_contents($feed_url['source']);
@@ -160,9 +162,9 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
     $matches = array();
 
     // Regex for matching all different feed items.
-    $allItems = "/(?:<item>)(.*?)(?:<\\/item>)/s";
+    $all_items = "/(?:<item>)(.*?)(?:<\\/item>)/s";
 
-    preg_match_all($allItems, $xml, $matches);
+    preg_match_all($all_items, $xml, $matches);
 
     foreach ($matches[0] as $match) {
       if (strpos($match, $node->title) != false) {
@@ -172,23 +174,23 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
     }
 
     // Matching the urls of the images.
-    $regexRSSImages1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
-    $regexRSSImages2 = "/(?:url=\")(.*)(?:\"\\/>)/";
+    $regex_rss_Images1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
+    $regex_rss_Images2 = "/(?:url=\")(.*)(?:\"\\/>)/";
 
-    if (!preg_match($regexRSSImages1, $xml)) {
-      preg_match_all($regexRSSImages2, $xml, $matches);
+    if (!preg_match($regex_rss_Images1, $xml)) {
+      preg_match_all($regex_rss_Images2, $xml, $matches);
     }
     else {
-      preg_match_all($regexRSSImages1, $xml, $matches);
+      preg_match_all($regex_rss_Images1, $xml, $matches);
     }
 
     // Urls of the images to be dowloaded and saved to the fiulesystem.
-    $imagesUrls = $matches[1];
+    $images_urls = $matches[1];
 
     $field_macine_name = variable_get('feed_image_' . $node->type); // = field_images
     // The actual URL where the image is, it is than used so that image can be dowloaded.
     // Than it can be stored into drupal's filesystem and can be found by other modules snd hooks.
-    foreach ($imagesUrls as $url) {
+    foreach ($images_urls as $url) {
       $file = system_retrieve_file($url, 'public://', true, FILE_EXISTS_REPLACE);
 
       file_usage_add($file, 'file', 'node', $node->nid);
