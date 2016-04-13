@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * This is the module file of the Feeds Images Importer.
+ * The functions and hooks implemented here are used in order
+ * to achieve the tergeted functionality of the module.
+ */
 
 /**
  * Implements hook_menu().
