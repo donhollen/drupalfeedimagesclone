@@ -24,7 +24,7 @@ function feed_image_menu() {
 
 /**
  * Settings form.
- * 
+ *
  * @return array();
  *   Function to return the configuration page form.
  */
