@@ -144,7 +144,7 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
   $alowed_nodes = variable_get('feed_image_content_type');
   $feed_image_state = variable_get('feed_image_state');
 
-  // If the module is activated and the content is chosent for pictures to be added.
+  // If the module is activated and the content is chosen for images.
   // Than go and add them, else just go out.
   if ($alowed_nodes[$node->type] == $node->type && $feed_image_state == 1) {
 
@@ -189,20 +189,20 @@ function feed_image_feeds_after_save(FeedsSource $source, $entity, $item, $entit
     $images_urls = $matches[1];
 
     $field_macine_name = variable_get('feed_image_' . $node->type);
-    // The actual URL where the image is, it is than used so that image can be dowloaded.
-    // Than it can be stored into drupal's filesystem and can be found by other modules snd hooks.
+    // The actual URL where the image is, it is used for image to be dowloaded.
+    // Now it's mstored in drupal's filesystem and can be used by other modules.
     foreach ($images_urls as $url) {
       $file = system_retrieve_file($url, 'public://', TRUE, FILE_EXISTS_REPLACE);
 
       file_usage_add($file, 'file', 'node', $node->nid);
 
-      // Associating the current node with all the files that were targeted so they can be loaded later in the node.
+      // Associating the current node with all the files that were targeted.
       $node->{$field_macine_name}[LANGUAGE_NONE][] = array(
         'fid' => $file->fid,
         'filename' => $file->filename,
         'uid' => 1,
         'uri' => $file->uri,
-        'status' => 1
+        'status' => 1,
       );
     }
 
