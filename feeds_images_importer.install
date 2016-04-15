@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Removing all set variables.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function feeds_images_importer_uninstall(){
+  // Removing all variables set by the module when it is uninstalled.
+   db_delete('variable')
+  ->condition('name', 'feeds_images_importer_%', 'LIKE')
+  ->execute();
+
+cache_clear_all('variables', 'cache_bootstrap');
+}

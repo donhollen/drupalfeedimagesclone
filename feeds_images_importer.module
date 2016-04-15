@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @file
+ * This is the module file of the Feeds Images Importer.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function feeds_images_importer_menu() {
+  $menu = array();
+
+  $menu['admin/config/content/feeds-images/settings'] = array(
+    'title' => 'Feeds Images Importer',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('feeds_images_importer_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'description' => 'Configure default options for Feeds Images Importer',
+    'file' => 'feeds_images_importer.admin.inc',
+  );
+
+  return $menu;
+}
+
+/**
+ * Validation for the settings form.
+ *
+ * @param array $form
+ *   Array returning the form.
+ * @param array $form_state
+ *   Array returning the form state.
+ */
+function feeds_images_importer_settings_form_validate($form, &$form_state) {
+  foreach ($form_state['values']['feeds_images_importer_content_type'] as $key => $value) {
+    if ($value != '0' && $form_state['values']['feeds_images_importer_' . $key] == NULL) {
+      form_set_error($key, t('You have to choose Fields for all chosen content types to be applied.'));
+    }
+  }
+}
+
+/**
+ * Implements hook_feeds_after_save().
+ */
+function feeds_images_importer_feeds_after_save(FeedsSource $source, $entity, $item, $entity_id) {
+  // Load the node.
+  $node = node_load($entity->nid);
+
+  $alowed_nodes = variable_get('feeds_images_importer_content_type');
+  $feeds_images_importer_state = variable_get('feeds_images_importer_state');
+
+  // If the module is activated and the content is chosen for images.
+  // Than go and add them, else just go out.
+  if ($alowed_nodes[$node->type] == $node->type && $ffeeds_images_importer_state == 1) {
+
+    // Make changes to the node that was just saved.
+    // Geting the link of the XML.
+    $feed_url_db = db_select('feeds_source', 'fs')
+        ->distinct()
+        ->fields('fs', array('source', 'imported'));
+
+    // Link of the XML.
+    $feed_url = $feed_url_db->execute()->fetchAssoc();
+
+    // XML source code.
+    $xml = file_get_contents($feed_url['source']);
+    // Array to store the matches.
+    $matches = array();
+
+    // Regex for matching all different feed items.
+    $all_items = "/(?:<item>)(.*?)(?:<\\/item>)/s";
+
+    preg_match_all($all_items, $xml, $matches);
+
+    foreach ($matches[0] as $match) {
+      if (strpos($match, $node->title) != FALSE) {
+        $xml = $match;
+        break;
+      }
+    }
+
+    // Matching the urls of the images.
+    $regex_rss_images1 = "/(?:<image>.*<url>)(.*)(?:<\\/url>)/";
+    $regex_rss_images2 = "/(?:url=\")(.*)(?:\"\\/>)/";
+
+    if (!preg_match($regex_rss_images1, $xml)) {
+      preg_match_all($regex_rss_images2, $xml, $matches);
+    }
+    else {
+      preg_match_all($regex_rss_images1, $xml, $matches);
+    }
+
+    // Urls of the images to be dowloaded and saved to the fiulesystem.
+    $images_urls = $matches[1];
+
+    $field_macine_name = variable_get('feeds_images_importer_' . $node->type);
+    // The actual URL where the image is, it is used for image to be dowloaded.
+    // Now it's mstored in drupal's filesystem and can be used by other modules.
+    foreach ($images_urls as $url) {
+      $file = system_retrieve_file($url, 'public://', TRUE, FILE_EXISTS_REPLACE);
+
+      file_usage_add($file, 'file', 'node', $node->nid);
+
+      // Associating the current node with all the files that were targeted.
+      $node->{$field_macine_name}[LANGUAGE_NONE][] = array(
+        'fid' => $file->fid,
+        'filename' => $file->filename,
+        'uid' => 1,
+        'uri' => $file->uri,
+        'status' => 1,
+      );
+    }
+
+    // Finish changes and save the node.
+    node_save($node);
+  }
+}
