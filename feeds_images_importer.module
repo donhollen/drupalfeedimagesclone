@@ -51,7 +51,7 @@ function feeds_images_importer_feeds_after_save(FeedsSource $source, $entity, $i
 
   // If the module is activated and the content is chosen for images.
   // Than go and add them, else just go out.
-  if ($alowed_nodes[$node->type] == $node->type && $ffeeds_images_importer_state == 1) {
+  if ($alowed_nodes[$node->type] == $node->type && $feeds_images_importer_state == 1) {
 
     // Make changes to the node that was just saved.
     // Geting the link of the XML.

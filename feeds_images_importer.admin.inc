@@ -35,16 +35,16 @@ function feeds_images_importer_settings_form() {
     '#title' => t("Choose content types:"),
     '#states' => array(
       'visible' => array(
-        ':input[name="feed_image_state"]' => array('checked' => TRUE),
+        ':input[name="feeds_images_importer"]' => array('checked' => TRUE),
       ),
     ),
   );
 
-  $form['settings']['on_off_box']['feed_image_state'] = array(
+  $form['settings']['on_off_box']['feeds_images_importer'] = array(
     '#type' => 'checkbox',
     '#title' => t('Turn on/off the module.'),
     '#description' => t('Turning the module off is going to disable it but it is not going to affect any of the already saved content.'),
-    '#default_value' => variable_get('feed_image_state', ""),
+    '#default_value' => variable_get('feeds_images_importer', ""),
   );
 
   $form['settings']['content_types']['feed_image_content_type'] = array(
@@ -61,7 +61,7 @@ function feeds_images_importer_settings_form() {
     '#title' => t("Choose Fields for images to be attached:"),
     '#states' => array(
       'visible' => array(
-        ':input[name="feed_image_state"]' => array('checked' => TRUE),
+        ':input[name="feeds_images_importer"]' => array('checked' => TRUE),
       ),
     ),
   );
