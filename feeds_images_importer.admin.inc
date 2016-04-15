@@ -47,11 +47,11 @@ function feeds_images_importer_settings_form() {
     '#default_value' => variable_get('feeds_images_importer', ""),
   );
 
-  $form['settings']['content_types']['feed_image_content_type'] = array(
+  $form['settings']['content_types']['feeds_images_importer_content_type'] = array(
     '#type' => 'checkboxes',
     '#options' => $node_types,
     '#title' => t('What content types do you want to use this module with?'),
-    '#default_value' => variable_get('feed_image_content_type', array()),
+    '#default_value' => variable_get('feeds_images_importer_content_type', array()),
     '#description' => t('All the content types that are chosen are going to have images attached to their image fields when they are generated with Feeds module. If the Image Field is set to multiple all the available images are to be dowlnoaded.'),
   );
 
@@ -83,15 +83,15 @@ function feeds_images_importer_settings_form() {
         '#title' => $name . ":",
         '#states' => array(
           'visible' => array(
-            ':input[name="feed_image_content_type[' . $machine_name . ']"]' => array('checked' => TRUE),
+            ':input[name="feeds_images_importer_content_type[' . $machine_name . ']"]' => array('checked' => TRUE),
           ),
         ),
       );
 
-      $form['settings']['choose_field'][$machine_name]['feed_image_' . $machine_name] = array(
+      $form['settings']['choose_field'][$machine_name]['feeds_images_importer_' . $machine_name] = array(
         '#type' => 'radios',
         '#options' => $fields[$machine_name],
-        '#default_value' => variable_get('feed_image_' . $machine_name, ""),
+        '#default_value' => variable_get('feeds_images_importer_' . $machine_name, ""),
         '#required' => FALSE,
         '#description' => t("It is a MUST to choose a field of type 'image'."),
       );

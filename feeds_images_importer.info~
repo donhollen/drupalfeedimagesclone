@@ -2,5 +2,6 @@ name = Feed Images Importer
 description = Gets the RSS feeds images from the URL passed to the Feed module.
 package = Feeds
 core = 7.x
+version = "7.x-1.0-beta"
 configure = admin/config/content/feeds-images/settings
 dependencies[] = feeds
