@@ -40,7 +40,7 @@ function feeds_images_importer_settings_form() {
     ),
   );
 
-  $form['settings']['on_off_box']['feeds_images_importer'] = array(
+  $form['settings']['on_off_box']['feeds_images_importer_state'] = array(
     '#type' => 'checkbox',
     '#title' => t('Turn on/off the module.'),
     '#description' => t('Turning the module off is going to disable it but it is not going to affect any of the already saved content.'),

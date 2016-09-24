@@ -90,7 +90,7 @@ function feeds_images_importer_feeds_after_save(FeedsSource $source, $entity, $i
       preg_match_all($regex_rss_images1, $xml, $matches);
     }
 
-    // Urls of the images to be dowloaded and saved to the fiulesystem.
+    // Urls of the images to be downloaded and saved to the filesystem.
     $images_urls = $matches[1];
 
     $field_macine_name = variable_get('feeds_images_importer_' . $node->type);
